@@ -7,7 +7,6 @@ import org.junit.Test;
 import ru.job4j.queue.QueueService;
 
 public class QueueServiceTest {
-    @Ignore
     @Test
     public void whenPostThenGetQueue() {
         QueueService queueService = new QueueService();
@@ -23,5 +22,12 @@ public class QueueServiceTest {
         assertThat(result.text(), is("temperature=18"));
     }
 
-
+    @Test(expected = NullPointerException.class)
+    public void whenBeginGetThenNull() {
+        QueueService queueService = new QueueService();
+        String paramForPostMethod = "temperature=18";
+        Resp result = queueService.process(
+                new Req("GET", "queue", "weather", null)
+        );
+    }
 }

@@ -14,12 +14,15 @@ public class TopicService implements Service {
     public Resp process(Req rea) {
         Resp resp = null;
         if ("GET".equals(rea.getHttpRequestType()) && ("topic".equals(rea.getPoohMode()))) {
-            topics.get(rea.getSourceName()).putIfAbsent(rea.getSourceName(), new ConcurrentLinkedQueue<>());
-            topics.get(rea.getSourceName()).get(rea.getSourceName()).add(rea.getParam());
-            resp = new Resp("", "200");
+            topics.putIfAbsent(rea.getSourceName(), new ConcurrentHashMap<>());
+            topics.get(rea.getSourceName()).putIfAbsent(rea.getParam(), new ConcurrentLinkedQueue<>());
+            String text = topics.get(rea.getSourceName()).get(rea.getParam()).poll();
+            resp = text == null ? new Resp("", "204") : new Resp(text, "200");
         } else if ("POST".equals(rea.getHttpRequestType()) && "topic".equals(rea.getPoohMode())) {
-            topics.get(rea.getSourceName()).get(rea.getSourceName()).poll();
-            resp = new Resp("temperature=18", "200");
+            ConcurrentHashMap<String, ConcurrentLinkedQueue<String>> topic = topics.get(rea.getSourceName());
+            for (ConcurrentLinkedQueue linkedQueue : topic.values()) {
+                 linkedQueue.add(rea.getParam());
+            }
         }
         return resp;
     }
