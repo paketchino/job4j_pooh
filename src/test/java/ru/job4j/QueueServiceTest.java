@@ -26,8 +26,8 @@ public class QueueServiceTest {
     public void whenBeginGetThenNull() {
         QueueService queueService = new QueueService();
         String paramForPostMethod = "temperature=18";
-        Resp result = queueService.process(
-                new Req("GET", "queue", "weather", null)
+        queueService.process(
+                new Req("GET", "queue", "weather", paramForPostMethod)
         );
     }
 }

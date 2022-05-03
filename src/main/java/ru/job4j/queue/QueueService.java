@@ -19,10 +19,9 @@ public class QueueService implements Service {
         if ("POST".equals(rea.getHttpRequestType())) {
             queue.putIfAbsent(rea.getSourceName(), new ConcurrentLinkedQueue<>());
             queue.get(rea.getSourceName()).add(rea.getParam());
-            resp = new Resp("", "200");
         } else if ("GET".equals(rea.getHttpRequestType())) {
-            queue.get(rea.getSourceName()).poll();
-            resp = new Resp("temperature=18", "200");
+            String text = queue.get(rea.getSourceName()).poll();
+            return resp == null ? new Resp(text, "200") : new Resp("", "204");
         }
         return resp;
     }
