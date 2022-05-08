@@ -12,7 +12,7 @@ public class TopicService implements Service {
     private final ConcurrentHashMap<String, ConcurrentHashMap<String, ConcurrentLinkedQueue<String>>> topics = new ConcurrentHashMap<>();
     @Override
     public Resp process(Req rea) {
-        Resp resp = null;
+        Resp resp = new Resp("", "204");
         if ("GET".equals(rea.getHttpRequestType()) && ("topic".equals(rea.getPoohMode()))) {
             topics.putIfAbsent(rea.getSourceName(), new ConcurrentHashMap<>());
             topics.get(rea.getSourceName()).putIfAbsent(rea.getParam(), new ConcurrentLinkedQueue<>());

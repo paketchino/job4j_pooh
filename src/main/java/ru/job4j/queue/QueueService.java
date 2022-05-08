@@ -12,16 +12,13 @@ public class QueueService implements Service {
     private final ConcurrentHashMap<String, ConcurrentLinkedQueue<String>> queue = new ConcurrentHashMap();
     @Override
     public Resp process(Req rea) {
-        Resp resp = null;
-        if (queue.isEmpty()) {
-            resp = new Resp("", "204");
-        }
+        Resp resp = new Resp("", "204");
         if ("POST".equals(rea.getHttpRequestType())) {
             queue.putIfAbsent(rea.getSourceName(), new ConcurrentLinkedQueue<>());
             queue.get(rea.getSourceName()).add(rea.getParam());
         } else if ("GET".equals(rea.getHttpRequestType())) {
             String text = queue.get(rea.getSourceName()).poll();
-            return resp == null ? new Resp(text, "200") : new Resp("", "204");
+            return new Resp(text, "200");
         }
         return resp;
     }
